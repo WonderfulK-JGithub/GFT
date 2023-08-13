@@ -79,4 +79,17 @@ public class PlayerController : MonoBehaviour
     {
         rb.velocity = walkSpeed * walkDir;
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.TryGetComponent(typeof(ICollideable),out Component _comp)) //kollar om det den collidar med har ett script med interfacet ICollideable
+        {
+            (_comp as ICollideable).OnCollide();
+        }
+    }
+}
+
+public interface ICollideable
+{
+    void OnCollide();
 }
