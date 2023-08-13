@@ -30,7 +30,8 @@ Transform:
   m_LocalPosition: {x: 7, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 8270015595555417126}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7500709431913042632
@@ -97,3 +98,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0317a5d424674640aa291fd932e084a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  minionBallPrefab: {fileID: 9200128155450762858, guid: 5d7e7652cd3c3534ab20eb1987c257ce, type: 3}
+  ballSpawnPoint: {fileID: 8270015595555417126}
+--- !u!1 &5501421959831269896
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8270015595555417126}
+  m_Layer: 0
+  m_Name: Shoot point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8270015595555417126
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5501421959831269896}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.41, y: 0.716, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1608268218740606690}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

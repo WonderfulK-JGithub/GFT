@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class BattleManager : MonoBehaviour
 {
+    public static BattleManager current;
+
     [SerializeField] List<GameObject> allyPrefabs;
     [SerializeField] List<GameObject> enemyPrefabs;
     [SerializeField] Transform[] allyPositions;
@@ -31,8 +34,18 @@ public class BattleManager : MonoBehaviour
 
     List<IBattleable> battleQue = new();
 
+    BattleState state;
+
+    [SerializeField] GameObject playerPanel;
+    [SerializeField] TMP_Text[] mainOptions;
+    [SerializeField] Color selectColor;
+
+    int targetOption;
+
     private void Awake()
     {
+        current = this;
+
         //skapar allies och enemies och lägger till dem i listorna
         for (int i = 0; i < alliesToSpawn.Count; i++)
         {
@@ -47,6 +60,34 @@ public class BattleManager : MonoBehaviour
 
         LoadBattleQue();
         battleQue[0].YourTurn();
+    }
+
+    private void Update()
+    {
+        switch (state)
+        {
+            case BattleState.mainSelect:
+                int _input = (int)WonderfulInput.WInput.x;
+                if(_input != 0)
+                {
+                     int _newTarget = targetOption + _input;
+                    if (_newTarget < 0) _newTarget = mainOptions.Length - 1;
+                    else if (_newTarget > mainOptions.Length - 1) _newTarget = 0;
+
+                    NewMainOptionTarget(_newTarget);
+                }
+                break;
+        }
+    }
+
+    public void NewMainOptionTarget(int _newTarget)
+    {
+        foreach (var item in mainOptions)
+        {
+            item.color = Color.white;
+        }
+        mainOptions[_newTarget].color = selectColor;
+        targetOption = _newTarget;
     }
 
     List<IBattleable> GetAllEnteties()
@@ -102,6 +143,18 @@ public class BattleManager : MonoBehaviour
         }
         battleQue[0].YourTurn();
     }
+
+    public void StartSelection()
+    {
+        NewMainOptionTarget(0);
+        playerPanel.SetActive(true);
+        state = BattleState.mainSelect;
+    }
+}
+public enum BattleState
+{
+    action,
+    mainSelect,
 }
 
 public interface IBattleable
@@ -110,4 +163,7 @@ public interface IBattleable
     void TakeDamage(int _damage);
 
     int Speed { get; }
+    int Health { get; }
+
+    GameObject GetGameObject();
 }

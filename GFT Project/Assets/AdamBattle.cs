@@ -12,13 +12,28 @@ public class AdamBattle : MonoBehaviour,IBattleable
         }
     }
 
+    int health = 100;
+    public int Health
+    {
+        get
+        {
+            return health;
+        }
+    }
+
+    public GameObject GetGameObject()
+    {
+        return gameObject;
+    }
+
     public void TakeDamage(int _damage)
     {
-        throw new System.NotImplementedException();
+        health -= _damage;
+        print("aj");
     }
 
     public void YourTurn()
     {
-        print("Adam time");
+        BattleManager.current.StartSelection();
     }
 }
