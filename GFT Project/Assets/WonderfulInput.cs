@@ -35,7 +35,6 @@ public class WonderfulInput : MonoBehaviour
 
     private void Update()
     {
-        print(wInput.x);
 
         Vector2 _newInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         

@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public static Vector3 spawnPos;
+
+    public static PlayerController current;
+
     [SerializeField] float walkSpeed;
 
     Rigidbody2D rb;
@@ -18,6 +22,12 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        current = this;
+    }
+
+    private void Start()
+    {
+        transform.position = spawnPos;
     }
 
     private void Update()
@@ -86,6 +96,11 @@ public class PlayerController : MonoBehaviour
         {
             (_comp as ICollideable).OnCollide();
         }
+    }
+
+    public void SaveSpawnPos()
+    {
+        spawnPos = transform.position;
     }
 }
 

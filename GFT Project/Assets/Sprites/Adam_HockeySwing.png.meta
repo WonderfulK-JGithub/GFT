@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: fa4161adf496877438ef05dc0838c38b
+guid: 4530eff2e77000f45b29a1e8044fc77a
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,253 +110,169 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Adam_Idle_0
+      name: Adam_HockeySwing_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 48
-        width: 16
-        height: 24
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        y: 64
+        width: 32
+        height: 32
+      alignment: 9
+      pivot: {x: 0.34375, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 12ac625172998cc429ddc07ee95f7dc4
-      internalID: 278070094
+      spriteID: e47fe6e9b6049b341ad342aa36a64ffe
+      internalID: -732929125
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Adam_Idle_1
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 48
-        width: 16
-        height: 24
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2e90705f98813c24db422276ed589d5a
-      internalID: 1018244796
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Adam_Idle_2
+      name: Adam_HockeySwing_1
       rect:
         serializedVersion: 2
         x: 32
-        y: 48
-        width: 16
-        height: 24
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        y: 64
+        width: 32
+        height: 32
+      alignment: 9
+      pivot: {x: 0.34375, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e0a73a10efbe4d04c97f638bff990247
-      internalID: 1446962523
+      spriteID: d8022bea36b13b6448003b69ab766906
+      internalID: 1723975348
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Adam_Idle_3
+      name: Adam_HockeySwing_2
       rect:
         serializedVersion: 2
-        x: 48
-        y: 48
-        width: 16
-        height: 24
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 64
+        y: 64
+        width: 32
+        height: 32
+      alignment: 9
+      pivot: {x: 0.34375, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0de8098a1cf5d384980d81d918afacd0
-      internalID: -24584827
+      spriteID: cbfd111192c307b499afbd0beeca720c
+      internalID: 587142646
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Adam_Idle_4
+      name: Adam_HockeySwing_3
       rect:
         serializedVersion: 2
         x: 0
-        y: 24
-        width: 16
-        height: 24
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        y: 32
+        width: 32
+        height: 32
+      alignment: 9
+      pivot: {x: 0.34375, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7c8cc66683699204f8da4be6ff2490a9
-      internalID: -466279337
+      spriteID: c969c26d33723cf4db17c4205af2c8ea
+      internalID: 1038013747
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Adam_Idle_5
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 24
-        width: 16
-        height: 24
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 010ebaa2f182fa842a12a050f5c07eaa
-      internalID: 1536534002
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Adam_Idle_6
+      name: Adam_HockeySwing_4
       rect:
         serializedVersion: 2
         x: 32
-        y: 24
-        width: 16
-        height: 24
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        y: 32
+        width: 32
+        height: 32
+      alignment: 9
+      pivot: {x: 0.34375, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8649d7dd46d71264bb3e754aee9be755
-      internalID: 644324789
+      spriteID: bb3eb2ffd72563c4a82acd4bc54f7cc9
+      internalID: -1278023284
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Adam_Idle_7
+      name: Adam_HockeySwing_5
       rect:
         serializedVersion: 2
-        x: 48
-        y: 24
-        width: 16
-        height: 24
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 64
+        y: 32
+        width: 32
+        height: 32
+      alignment: 9
+      pivot: {x: 0.34375, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e177d805a15dc064ba7b87d11cb0e07e
-      internalID: 990481370
+      spriteID: 935040b96ee8a5b438c29a8edad1d94c
+      internalID: -934474247
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Adam_Idle_8
+      name: Adam_HockeySwing_6
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 16
-        height: 24
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        width: 32
+        height: 32
+      alignment: 9
+      pivot: {x: 0.34375, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5defdd542defe6c42987601b0f8395ed
-      internalID: 1261716801
+      spriteID: 44339177c1017dc4992718e465c1467e
+      internalID: -1291618485
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Adam_Idle_9
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 0
-        width: 16
-        height: 24
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: dd8c31648e04bbe42850b50272195960
-      internalID: 2083917620
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Adam_Idle_10
+      name: Adam_HockeySwing_7
       rect:
         serializedVersion: 2
         x: 32
         y: 0
-        width: 16
-        height: 24
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        width: 32
+        height: 32
+      alignment: 9
+      pivot: {x: 0.34375, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b55573dda3db3e94680593938cea14a8
-      internalID: -1900373773
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Adam_Idle_11
-      rect:
-        serializedVersion: 2
-        x: 48
-        y: 0
-        width: 16
-        height: 24
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 34036fce63dfe31409a9ad36d5372b53
-      internalID: -764684812
+      spriteID: 4a9a71b9bf08fb14fbed68edec0d4a98
+      internalID: 1486659042
       vertices: []
       indices: 
       edges: []
@@ -372,18 +288,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Adam_Idle_0: 278070094
-      Adam_Idle_1: 1018244796
-      Adam_Idle_10: -1900373773
-      Adam_Idle_11: -764684812
-      Adam_Idle_2: 1446962523
-      Adam_Idle_3: -24584827
-      Adam_Idle_4: -466279337
-      Adam_Idle_5: 1536534002
-      Adam_Idle_6: 644324789
-      Adam_Idle_7: 990481370
-      Adam_Idle_8: 1261716801
-      Adam_Idle_9: 2083917620
+      Adam_HockeySwing_0: -732929125
+      Adam_HockeySwing_1: 1723975348
+      Adam_HockeySwing_2: 587142646
+      Adam_HockeySwing_3: 1038013747
+      Adam_HockeySwing_4: -1278023284
+      Adam_HockeySwing_5: -934474247
+      Adam_HockeySwing_6: -1291618485
+      Adam_HockeySwing_7: 1486659042
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

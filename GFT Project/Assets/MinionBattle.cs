@@ -10,6 +10,15 @@ public class MinionBattle : MonoBehaviour,IBattleable
     GameObject ball;
     IBattleable targetPlayer;
 
+    public Bounds TargetBounds
+    {
+        get
+        {
+            Bounds _bounds = new(Vector3.up * 0.5f, new Vector3(1f, 1f));
+            return _bounds;
+        }
+    }
+
     public int Speed
     {
         get
@@ -33,7 +42,13 @@ public class MinionBattle : MonoBehaviour,IBattleable
 
     public void TakeDamage(int _damage)
     {
-        throw new System.NotImplementedException();
+        health -= _damage;
+        BattleManager.current.CreateBattleNumberText(transform.position + TargetBounds.center, _damage.ToString(), BattleNumberType.EnemyDamage);
+        if (health <= 0)
+        {
+            BattleManager.current.EnemyDefeated(this);
+            Destroy(gameObject);
+        }
     }
 
     public void YourTurn()
@@ -51,7 +66,7 @@ public class MinionBattle : MonoBehaviour,IBattleable
     void Hit()
     {
         Destroy(ball);
-        targetPlayer.TakeDamage(1);
+        targetPlayer.TakeDamage(5);
         BattleManager.current.TurnEnded();
     }
 }
