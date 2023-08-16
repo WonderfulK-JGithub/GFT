@@ -79,7 +79,7 @@ public class BattleManager : MonoBehaviour
             Component _ally = Instantiate(allyPrefabs[alliesToSpawn[i]], allyPositions[i].position, Quaternion.identity).GetComponent(typeof(IBattleable));
             allies.Add(_ally as IBattleable);
             alliesData.Add(_ally as IAllyable);
-            (_ally as IAllyable).Index = i;
+            (_ally as IAllyable).SetStats(i);
             allyStatPanels[i].SetActive(true);
             UpdateAllyStatPanel(i);
         }
@@ -138,6 +138,15 @@ public class BattleManager : MonoBehaviour
 
                     NewEnemyTarget(_newTarget);
                 }
+                _input = (int)WonderfulInput.WInput.y;
+                if (_input != 0)
+                {
+                    int _newTarget = enemyTarget + _input;
+                    if (_newTarget < 0) _newTarget = enemies.Count - 1;
+                    else if (_newTarget > enemies.Count - 1) _newTarget = 0;
+
+                    NewEnemyTarget(_newTarget);
+                }
                 if (Input.GetButtonDown("Select"))
                 {
                     Destroy(currentMarkers[0]);
@@ -150,8 +159,10 @@ public class BattleManager : MonoBehaviour
                 else if (Input.GetButtonDown("Return"))
                 {
                     state = BattleState.mainSelect;
-
+                    Destroy(currentMarkers[0]);
+                    currentMarkers.Clear();
                     OnEndSelection = null;
+                    mainOptions[mainOptionTarget].color = selectColor;
                 }
                 break;
                 #endregion
@@ -303,6 +314,7 @@ public interface IBattleable
 
 public interface IAllyable
 {
+    void SetStats(int _index);
     void RegularAttack();
 
     int Index { get; set; }
