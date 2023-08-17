@@ -8,19 +8,20 @@ public class BattleAlly : MonoBehaviour, IBattleable, IAllyable
     {
         get
         {
-            Bounds _bounds = new(Vector3.up * 1.5f, new Vector3(1f, 1.5f));
+            Bounds _bounds = new(Vector3.up * 0.75f, new Vector3(1f, 1.5f));
             return _bounds;
         }
     }
 
 
-    public int Index { get; set; }
+    public int BattleIndex { get; set; }
 
+    protected int speed;
     public int Speed
     {
         get
         {
-            return 10;
+            return speed;
         }
     }
 
@@ -32,11 +33,12 @@ public class BattleAlly : MonoBehaviour, IBattleable, IAllyable
             return health;
         }
     }
+    protected int maxHealth;
     public int MaxHealth
     {
         get
         {
-            return 40;
+            return maxHealth;
         }
     }
     protected int energy = 100;
@@ -47,11 +49,12 @@ public class BattleAlly : MonoBehaviour, IBattleable, IAllyable
             return energy;
         }
     }
+    protected int maxEnergy;
     public int MaxEnergy
     {
         get
         {
-            return 100;
+            return maxEnergy;
         }
     }
     protected int tilt = 0;
@@ -62,6 +65,10 @@ public class BattleAlly : MonoBehaviour, IBattleable, IAllyable
             return tilt;
         }
     }
+
+    protected int attackPower;
+    protected int defense;
+    protected int accuracy;
 
     protected Animator anim;
     protected SpriteRenderer rend;
@@ -75,6 +82,8 @@ public class BattleAlly : MonoBehaviour, IBattleable, IAllyable
     protected float waitTimer;
 
     protected Vector3 startPos;
+
+    GameObject itemObject;
 
     protected virtual void Awake()
     {
@@ -118,15 +127,25 @@ public class BattleAlly : MonoBehaviour, IBattleable, IAllyable
         return gameObject;
     }
 
-    public void SetStats(int _index)
+    public void SetStats(int _battleIndex,int _allyIndex)
     {
-        Index = _index;
-        timeButton = timeButtons[_index];
+        BattleIndex = _battleIndex;
+        timeButton = timeButtons[_battleIndex];
+
+        AllyStats _stats = AllyStatsManager.current.alliesStats[_allyIndex];
+        health = _stats.currentHealth;
+        maxHealth = _stats.maxHealth;
+        energy = _stats.currentEnergy;
+        maxEnergy = _stats.maxEnergy;
+        attackPower = _stats.attackPower;
+        defense = _stats.defense;
+        accuracy = _stats.accuracy;
+        speed = _stats.speed;
     }
 
     public virtual void YourTurn()
     {
-        BattleManager.current.StartSelection(Index);
+        BattleManager.current.StartSelection(BattleIndex);
     }
 
     public virtual void TakeDamage(int _damage)
@@ -134,10 +153,67 @@ public class BattleAlly : MonoBehaviour, IBattleable, IAllyable
         Debug.Log("Aj");
     }
 
+    public virtual void Heal(int _amount)
+    {
+        health += _amount;
+        health = Mathf.Clamp(health, 0, maxHealth);
+
+        BattleManager.current.CreateBattleNumberText(transform.position + TargetBounds.center, _amount.ToString(), BattleNumberType.Heal);
+        BattleManager.current.UpdateAllyStatPanel(BattleIndex);
+    }
+
     public virtual void RegularAttack()
     {
 
     }
 
-    
+    protected bool AccuractCheck()
+    {
+        return accuracy > Random.Range(0, 100);
+    }
+
+    //först item animation
+    public virtual void UseItem()
+    {
+        Item _usedItem = BattleManager.current.selectedItem;
+        itemObject = Instantiate(BattleManager.current.battleItemIconPrefab,transform.position + TargetBounds.center,Quaternion.identity);
+        itemObject.GetComponent<SpriteRenderer>().sprite = _usedItem.ItemSprite;
+        itemObject.LeanMoveY(itemObject.transform.position.y + 1f, 0.5f).setOnComplete(ItemUsage);
+        anim.Play("Item");
+    }
+    //när item animationen är klar
+    void ItemUsage()
+    {
+        anim.Play("BattleIdle");
+        Destroy(itemObject);
+
+        Item _usedItem = BattleManager.current.selectedItem;
+        switch (_usedItem.TypeOfItem)
+        {
+            case ItemType.healing:
+                HealingItem _heal = _usedItem as HealingItem;
+                if (_heal.TargetAll)
+                {
+                    foreach (var _ally in BattleManager.current.Allies)
+                    {
+                        _ally.Heal(_heal.HealthGain);
+                    }
+                }
+                else
+                {
+                    BattleManager.current.Allies[BattleManager.current.allyTarget].Heal(_heal.HealthGain);
+                }
+                Invoke(nameof(EndTurn), 1f);
+                break;
+        }
+
+        AllyStatsManager.current.RemoveItem(_usedItem);
+    }
+
+    protected virtual void EndTurn()
+    {
+        anim.Play("BattleIdle");
+        BattleManager.current.TurnEnded();
+        rend.sortingOrder = 0;
+    }
 }

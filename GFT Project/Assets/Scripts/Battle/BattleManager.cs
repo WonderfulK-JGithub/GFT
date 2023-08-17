@@ -42,6 +42,7 @@ public class BattleManager : MonoBehaviour
 
     BattleState state;
 
+    [Header("Menu & UI")]
     [SerializeField] GameObject[] allyStatPanels;
     [SerializeField] TMP_Text[] allyHealthTexts;
     [SerializeField] Slider[] allyHealthBars;
@@ -55,10 +56,25 @@ public class BattleManager : MonoBehaviour
     [SerializeField] Color selectColor;
     [SerializeField] GameObject markerPrefab;
 
+
+    [Header("   Main Options")]
     int currentAlly;
     int mainOptionTarget;
     [HideInInspector] public int enemyTarget;
     List<SpriteRenderer> currentMarkers = new();
+    [HideInInspector] public int allyTarget;
+
+
+    [Header("   Item/Inventory")]
+    [SerializeField] GameObject inventoryPanel;
+    [SerializeField] GameObject itemTextPrefab;
+    [SerializeField] Transform inventoryContents;
+    [SerializeField] float itemTextOffset;
+    public GameObject battleItemIconPrefab;
+    List<TMP_Text> itemTexts = new();
+    List<Item> battleInventory = new();
+    int itemTarget;
+    [HideInInspector] public Item selectedItem;
 
     [SerializeField] GameObject battleNumberPrefab;
     [SerializeField] GameObject battleTextPrefab;
@@ -79,7 +95,7 @@ public class BattleManager : MonoBehaviour
             Component _ally = Instantiate(allyPrefabs[alliesToSpawn[i]], allyPositions[i].position, Quaternion.identity).GetComponent(typeof(IBattleable));
             allies.Add(_ally as IBattleable);
             alliesData.Add(_ally as IAllyable);
-            (_ally as IAllyable).SetStats(i);
+            (_ally as IAllyable).SetStats(i, alliesToSpawn[i]);
             allyStatPanels[i].SetActive(true);
             UpdateAllyStatPanel(i);
         }
@@ -114,12 +130,18 @@ public class BattleManager : MonoBehaviour
                 {
                     switch (mainOptionTarget)
                     {
-                        case 0:
+                        case 0://normal attack
                         default:
-                            state = BattleState.selectSingleTarget;
+                            state = BattleState.selectSingleEnemy;
                             currentMarkers.Add(Instantiate(markerPrefab).GetComponent<SpriteRenderer>());
                             NewEnemyTarget(0);
                             OnEndSelection += alliesData[currentAlly].RegularAttack;
+                            break;
+                        case 2://items
+                            state = BattleState.itemSelect;
+                            inventoryPanel.SetActive(true);
+                            LoadItemTexts();
+                            NewItemTarget(0);
                             break;
                     }
                     mainOptions[mainOptionTarget].color = Color.gray;
@@ -127,7 +149,7 @@ public class BattleManager : MonoBehaviour
                 
                 break;
                 #endregion
-            case BattleState.selectSingleTarget:
+            case BattleState.selectSingleEnemy:
                 #region
                 _input = (int)WonderfulInput.WInput.x;
                 if (_input != 0)
@@ -165,6 +187,64 @@ public class BattleManager : MonoBehaviour
                     mainOptions[mainOptionTarget].color = selectColor;
                 }
                 break;
+            #endregion
+            case BattleState.itemSelect:
+                #region
+                _input = (int)WonderfulInput.WInput.y;
+                if (_input != 0)
+                {
+                    int _newTarget = itemTarget + _input;
+                    if (_newTarget < 0) _newTarget = itemTexts.Count - 1;
+                    else if (_newTarget > itemTexts.Count - 1) _newTarget = 0;
+
+                    NewItemTarget(_newTarget);
+                }
+                if (Input.GetButtonDown("Select"))
+                {
+                    ItemSelected();
+                    RemoveItemTexts();
+                    inventoryPanel.SetActive(false);
+                }
+                else if(Input.GetButtonDown("Return"))
+                {
+                    state = BattleState.mainSelect;
+                    RemoveItemTexts();
+                    inventoryPanel.SetActive(false);
+                    mainOptions[mainOptionTarget].color = selectColor;
+                }
+                break;
+            #endregion
+            case BattleState.selectSingleAlly:
+                #region
+                _input = (int)WonderfulInput.WInput.y;
+                if (_input != 0)
+                {
+                    int _newTarget = allyTarget + _input;
+                    if (_newTarget < 0) _newTarget = allies.Count - 1;
+                    else if (_newTarget > allies.Count - 1) _newTarget = 0;
+
+                    NewAllyTarget(_newTarget);
+                }
+                if (Input.GetButtonDown("Select"))
+                {
+                    Destroy(currentMarkers[0]);
+                    currentMarkers.Clear();
+                    OnEndSelection?.Invoke();
+                    OnEndSelection = null;
+                    playerPanel.SetActive(false);
+                    state = BattleState.action;
+                }
+                else if (Input.GetButtonDown("Return"))
+                {
+                    Destroy(currentMarkers[0]);
+                    currentMarkers.Clear();
+                    OnEndSelection = null;
+                    state = BattleState.itemSelect;
+                    inventoryPanel.SetActive(true);
+                    LoadItemTexts();
+                    NewItemTarget(0);
+                }
+                break;
                 #endregion
         }
     }
@@ -183,6 +263,18 @@ public class BattleManager : MonoBehaviour
         enemyTarget = _newTarget;
         currentMarkers[0].transform.position = enemies[enemyTarget].GetGameObject().transform.position + enemies[enemyTarget].TargetBounds.center;
         currentMarkers[0].size = (Vector2)enemies[enemyTarget].TargetBounds.size + Vector2.one * 0.2f;
+    }
+    public void NewItemTarget(int _newTarget)
+    {
+        itemTexts[itemTarget].color = Color.white;
+        itemTexts[_newTarget].color = selectColor;
+        itemTarget = _newTarget;
+    }
+    void NewAllyTarget(int _newTarget)
+    {
+        allyTarget = _newTarget;
+        currentMarkers[0].transform.position = allies[allyTarget].GetGameObject().transform.position + allies[allyTarget].TargetBounds.center;
+        currentMarkers[0].size = (Vector2)allies[allyTarget].TargetBounds.size + Vector2.one * 0.2f;
     }
 
     List<IBattleable> GetAllEnteties()
@@ -290,18 +382,73 @@ public class BattleManager : MonoBehaviour
         if (battleQue.Contains(_enemy)) battleQue.Remove(_enemy);
         enemies.Remove(_enemy);
     }
+
+    void LoadItemTexts()
+    {
+        for (int i = 0; i < AllyStatsManager.current.inventory.Count; i++)
+        {
+            Item _item = AllyStatsManager.current.inventory[i];
+            if (!_item.UseInBattle) continue;
+
+            Transform _itemText = Instantiate(itemTextPrefab).transform;
+            _itemText.SetParent(inventoryContents);
+            _itemText.transform.localScale = Vector3.one;
+            _itemText.transform.localPosition = new Vector3(0f, i * itemTextOffset);
+
+            var _text = _itemText.GetComponent<TMP_Text>();
+            _text.text = _item.ItemName;
+            itemTexts.Add(_text);
+            battleInventory.Add(_item);
+        }
+    }
+    void RemoveItemTexts()
+    {
+        foreach (var item in itemTexts)
+        {
+            Destroy(item.gameObject);
+        }
+        itemTexts.Clear();
+        battleInventory.Clear();
+    }
+    void ItemSelected()
+    {
+        selectedItem = battleInventory[itemTarget];
+        switch (selectedItem.TypeOfItem)
+        {
+            default:
+                Debug.Log("This item ain't do shit");
+                break;
+            case ItemType.healing:
+                HealingItem _heal = selectedItem as HealingItem;
+                if (_heal.TargetAll)
+                {
+                    Debug.Log("Fixar det här senare");
+                }
+                else
+                {
+                    state = BattleState.selectSingleAlly;
+                    currentMarkers.Add(Instantiate(markerPrefab).GetComponent<SpriteRenderer>());
+                    NewAllyTarget(0);
+                    OnEndSelection += alliesData[currentAlly].UseItem;
+                }
+                break;
+        }
+    }
 }
 public enum BattleState
 {
     action,
     mainSelect,
-    selectSingleTarget,
+    itemSelect,
+    selectSingleEnemy,
+    selectSingleAlly,
 }
 
 public interface IBattleable
 {
     void YourTurn();
     void TakeDamage(int _damage);
+    void Heal(int _amount);
 
     int Speed { get; }
     int Health { get; }
@@ -314,10 +461,11 @@ public interface IBattleable
 
 public interface IAllyable
 {
-    void SetStats(int _index);
+    void SetStats(int _battleIndex,int _allyIndex);
     void RegularAttack();
+    void UseItem();
 
-    int Index { get; set; }
+    int BattleIndex { get; set; }
     int Health { get; }
     int MaxHealth { get; }
     int Energy { get; }

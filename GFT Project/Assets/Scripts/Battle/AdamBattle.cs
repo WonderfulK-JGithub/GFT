@@ -23,7 +23,7 @@ public class AdamBattle : BattleAlly
         health -= _newDamage;
         
         BattleManager.current.CreateBattleNumberText(transform.position + TargetBounds.center, _newDamage.ToString(), BattleNumberType.AllyDamage);
-        BattleManager.current.UpdateAllyStatPanel(Index);
+        BattleManager.current.UpdateAllyStatPanel(BattleIndex);
     }
 
     void GoBack()
@@ -33,7 +33,7 @@ public class AdamBattle : BattleAlly
     }
     void Returned()
     {
-        anim.Play("Adam_BattleIdle");
+        anim.Play("BattleIdle");
         BattleManager.current.TurnEnded();
         rend.sortingOrder = 0;
     }

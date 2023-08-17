@@ -51,6 +51,14 @@ public class MinionBattle : MonoBehaviour,IBattleable
         }
     }
 
+    public virtual void Heal(int _amount)
+    {
+        health += _amount;
+        health = Mathf.Clamp(health, 0, 321312321);
+
+        BattleManager.current.CreateBattleNumberText(transform.position + TargetBounds.center, _amount.ToString(), BattleNumberType.Heal);
+    }
+
     public void YourTurn()
     {
         Shoot();
