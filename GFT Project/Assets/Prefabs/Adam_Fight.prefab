@@ -98,6 +98,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 579f319f60d96a34daa58fbb55eef4f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  circleIndicatorPrefab: {fileID: 4589343554412135214, guid: 615e331a3e5a99d4dad8449f22f00638, type: 3}
+  hockeyClubPrefab: {fileID: 5961656534392622664, guid: b97f72ed567a26548b2c0d21f62b5619, type: 3}
+  hockeyPuckPrefab: {fileID: 7747664612600662813, guid: f6a48d8091474ed43bf07d8ad8abe297, type: 3}
+  thinkBubblePrefab: {fileID: 4959403703826735957, guid: f079e44d85d460a41a5c903326224a24, type: 3}
+  thinkingEmojiPrefab: {fileID: 3738680781560361253, guid: e1b0208e0429d804d90c5281f1d6f97e, type: 3}
+  angryEmojiPrefab: {fileID: 752545907296213177, guid: 26bffd775fedcec47ace2a4aa04c0d15, type: 3}
 --- !u!95 &4413657317126624688
 Animator:
   serializedVersion: 5

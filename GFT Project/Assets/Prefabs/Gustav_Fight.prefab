@@ -119,3 +119,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 392eed1182301654e9e163f89283f27b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  circleIndicatorPrefab: {fileID: 4589343554412135214, guid: 615e331a3e5a99d4dad8449f22f00638, type: 3}
+  thinkBubblePrefab: {fileID: 4959403703826735957, guid: e5a6a548f595a05438a578f1f28cb072, type: 3}
+  lightBulbPrefab: {fileID: 8325400217417132681, guid: 7c4b2996bfedd0845a5c75d3b0d3a8f4, type: 3}
+  questionMarkPrefab: {fileID: 3710607064104999158, guid: 079c6671aa9a48149adbb89d494266cc, type: 3}
+  chefHatPrefab: {fileID: 9195018226234973760, guid: 8dba605ecf60cfd41afe87dad87f8da0, type: 3}
+  chefExplotionParticles:
+  - {fileID: 6695295936237065254, guid: eb4b84c6b57030e4c8a7c778a87abadf, type: 3}
+  - {fileID: 355674614152514601, guid: 9b9e60775ba19e04994d162a1f0f3a1f, type: 3}
+  kladdkaka: {fileID: 11400000, guid: 3f8167c8f94085948830e7228404014d, type: 2}

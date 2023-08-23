@@ -13,16 +13,24 @@ public class BattleManager : MonoBehaviour
 
     [SerializeField] List<GameObject> allyPrefabs;
     [SerializeField] List<GameObject> enemyPrefabs;
-    [SerializeField] Transform[] allyPositions;
+    [SerializeField] Transform allyBasePos;
     [SerializeField] Transform enemyBasePos;
 
     public static List<int> alliesToSpawn = new();
     public static Dictionary<Vector3,int> enemiesToSpawn = new();//enemies har inte bestämda positioner, därför används ett dictionary här (men inte för allies)
 
-    List<IAllyable> alliesData = new();
+    List<IAllyable> alliesData = new();//om en ally dör finns den fortfarande kvar i denna lista
 
     List<IBattleable> allies = new();
     List<IBattleable> enemies = new();
+
+    public List<IAllyable> AlliesData
+    {
+        get
+        {
+            return alliesData;
+        }
+    }
     public List<IBattleable> Allies
     {
         get
@@ -39,8 +47,22 @@ public class BattleManager : MonoBehaviour
     }
 
     List<IBattleable> battleQue = new();
+    List<Image> queImages = new();
 
+    BattleState lastState;
     BattleState state;
+    BattleState State
+    {
+        get
+        {
+            return state;
+        }
+        set
+        {
+            lastState = state;
+            state = value;
+        }
+    }
 
     [Header("Menu & UI")]
     [SerializeField] GameObject[] allyStatPanels;
@@ -54,7 +76,16 @@ public class BattleManager : MonoBehaviour
     [SerializeField] GameObject playerPanel;
     [SerializeField] TMP_Text[] mainOptions;
     [SerializeField] Color selectColor;
+    [SerializeField] Color selectedColor;
+    [SerializeField] Color unavailableColor;
+    [SerializeField] Color selectUnavailableColor;
     [SerializeField] GameObject markerPrefab;
+
+    [SerializeField] Transform turnOrderPanel;
+    [SerializeField] GameObject emptyImagePrefab;
+    [SerializeField] Transform startTurnPoint;
+    [SerializeField] Transform endTurnPoint;
+    [SerializeField] float queImageOffset;
 
 
     [Header("   Main Options")]
@@ -76,6 +107,19 @@ public class BattleManager : MonoBehaviour
     int itemTarget;
     [HideInInspector] public Item selectedItem;
 
+    [Header("   Abilities")]
+    [SerializeField] GameObject abilityPanel;
+    [SerializeField] GameObject abilityTextPrefab;
+    [SerializeField] GameObject energyTextPrefab;
+    [SerializeField] Transform abilityContents;
+    [SerializeField] float abilityTextOffset;
+    List<TMP_Text> abilityTexts = new();
+    List<TMP_Text> energyTexts = new();
+    List<bool> canUseAbilities = new();
+    List<List<Ability>> alliesBattleAbilities = new();
+    int abilityTarget;
+    [HideInInspector] public Ability selectedAbility;
+
     [SerializeField] GameObject battleNumberPrefab;
     [SerializeField] GameObject battleTextPrefab;
 
@@ -89,15 +133,54 @@ public class BattleManager : MonoBehaviour
             enemiesToSpawn.Add(Vector3.zero,0);
         }
 
+        List<Vector3> _positions = new();
+
+        switch (alliesToSpawn.Count)
+        {
+            case 1:
+            default:
+                _positions.Add(allyBasePos.position);
+                break;
+            case 2:
+                _positions.Add(allyBasePos.position + Vector3.up * 1.25f);
+                _positions.Add(allyBasePos.position + Vector3.down * 1.25f);
+                break;
+            case 3:
+                _positions.Add(allyBasePos.position + Vector3.up * 1.5f);
+                _positions.Add(allyBasePos.position + Vector3.down * 0.5f);
+                _positions.Add(allyBasePos.position + Vector3.down * 2.5f);
+                break;
+        }
+
         //skapar allies och enemies och lägger till dem i listorna
         for (int i = 0; i < alliesToSpawn.Count; i++)
         {
-            Component _ally = Instantiate(allyPrefabs[alliesToSpawn[i]], allyPositions[i].position, Quaternion.identity).GetComponent(typeof(IBattleable));
+            Component _ally = Instantiate(allyPrefabs[alliesToSpawn[i]], _positions[i], Quaternion.identity).GetComponent(typeof(IBattleable));
             allies.Add(_ally as IBattleable);
             alliesData.Add(_ally as IAllyable);
             (_ally as IAllyable).SetStats(i, alliesToSpawn[i]);
             allyStatPanels[i].SetActive(true);
             UpdateAllyStatPanel(i);
+
+            List<Ability> _battleAbilities = new();
+            foreach (var _ability in AllyStatsManager.current.alliesStats[alliesToSpawn[i]].abilities)
+            {
+                if(_ability.NeededMembers == null)
+                {
+                    _battleAbilities.Add(_ability);
+                    continue;
+                }
+                List<int> _neededMembers = _ability.NeededMembers;
+                foreach (var _a in alliesToSpawn)
+                {
+                    if (_neededMembers.Contains(_a)) _neededMembers.Remove(_a);
+                }
+                if(_neededMembers.Count == 0)
+                {
+                    _battleAbilities.Add(_ability);
+                }
+            }
+            alliesBattleAbilities.Add(_battleAbilities);
         }
         foreach (var item in enemiesToSpawn)
         {
@@ -112,7 +195,7 @@ public class BattleManager : MonoBehaviour
     private void Update()
     {
         int _input;
-        switch (state)
+        switch (State)
         {
             case BattleState.mainSelect:
                 #region
@@ -132,19 +215,31 @@ public class BattleManager : MonoBehaviour
                     {
                         case 0://normal attack
                         default:
-                            state = BattleState.selectSingleEnemy;
+                            State = BattleState.selectSingleEnemy;
                             currentMarkers.Add(Instantiate(markerPrefab).GetComponent<SpriteRenderer>());
                             NewEnemyTarget(0);
                             OnEndSelection += alliesData[currentAlly].RegularAttack;
                             break;
+                        case 1://abilities
+                            State = BattleState.abilitySelect;
+                            abilityPanel.SetActive(true);
+                            LoadAbilityTexts();
+                            abilityTarget = 0;
+                            NewAbilityTarget(0);
+                            break;
                         case 2://items
-                            state = BattleState.itemSelect;
+                            if(AllyStatsManager.current.inventory.Count == 0)
+                            {
+                                return;
+                            }
+                            State = BattleState.itemSelect;
                             inventoryPanel.SetActive(true);
                             LoadItemTexts();
+                            itemTarget = 0;
                             NewItemTarget(0);
                             break;
                     }
-                    mainOptions[mainOptionTarget].color = Color.gray;
+                    mainOptions[mainOptionTarget].color = selectColor;
                 }
                 
                 break;
@@ -176,14 +271,40 @@ public class BattleManager : MonoBehaviour
                     OnEndSelection?.Invoke();
                     OnEndSelection = null;
                     playerPanel.SetActive(false);
-                    state = BattleState.action;
+                    State = BattleState.action;
                 }
                 else if (Input.GetButtonDown("Return"))
                 {
-                    state = BattleState.mainSelect;
-                    Destroy(currentMarkers[0]);
-                    currentMarkers.Clear();
-                    OnEndSelection = null;
+                    BackFromTargeting();
+                }
+                break;
+            #endregion
+            case BattleState.abilitySelect:
+                #region
+                _input = (int)WonderfulInput.WInput.y;
+                if (_input != 0)
+                {
+                    int _newTarget = abilityTarget + _input;
+                    if (_newTarget < 0) _newTarget = abilityTexts.Count - 1;
+                    else if (_newTarget > abilityTexts.Count - 1) _newTarget = 0;
+
+                    print(_newTarget);
+                    NewAbilityTarget(_newTarget);
+                }
+                if (Input.GetButtonDown("Select"))
+                {
+                    if (canUseAbilities[abilityTarget])
+                    {
+                        AbilitySelected();
+                        RemoveAbilityTexts();
+                        abilityPanel.SetActive(false);
+                    }
+                }
+                else if (Input.GetButtonDown("Return"))
+                {
+                    State = BattleState.mainSelect;
+                    RemoveAbilityTexts();
+                    abilityPanel.SetActive(false);
                     mainOptions[mainOptionTarget].color = selectColor;
                 }
                 break;
@@ -207,7 +328,7 @@ public class BattleManager : MonoBehaviour
                 }
                 else if(Input.GetButtonDown("Return"))
                 {
-                    state = BattleState.mainSelect;
+                    State = BattleState.mainSelect;
                     RemoveItemTexts();
                     inventoryPanel.SetActive(false);
                     mainOptions[mainOptionTarget].color = selectColor;
@@ -232,20 +353,46 @@ public class BattleManager : MonoBehaviour
                     OnEndSelection?.Invoke();
                     OnEndSelection = null;
                     playerPanel.SetActive(false);
-                    state = BattleState.action;
+                    State = BattleState.action;
                 }
                 else if (Input.GetButtonDown("Return"))
                 {
+                    BackFromTargeting();
+                }
+                break;
+            #endregion
+            case BattleState.selectAnyAlly:
+                #region
+                _input = (int)WonderfulInput.WInput.y;
+                if (_input != 0)
+                {
+                    int _newTarget = allyTarget + _input;
+                    if (_newTarget < 0) _newTarget = alliesData.Count - 1;
+                    else if (_newTarget > alliesData.Count - 1) _newTarget = 0;
+
+                    NewAllyTarget(_newTarget,true);
+                }
+                if (Input.GetButtonDown("Select"))
+                {
                     Destroy(currentMarkers[0]);
                     currentMarkers.Clear();
+                    OnEndSelection?.Invoke();
                     OnEndSelection = null;
-                    state = BattleState.itemSelect;
-                    inventoryPanel.SetActive(true);
-                    LoadItemTexts();
-                    NewItemTarget(0);
+                    playerPanel.SetActive(false);
+                    State = BattleState.action;
+                }
+                else if (Input.GetButtonDown("Return"))
+                {
+                    BackFromTargeting();
                 }
                 break;
                 #endregion
+        }
+
+        for (int i = 0; i < queImages.Count; i++)
+        {
+            Vector3 _targetPos = endTurnPoint.position + i * queImageOffset * Vector3.right;
+            queImages[i].transform.position = Vector3.Lerp(queImages[i].transform.position, _targetPos, 5f * Time.deltaTime);
         }
     }
 
@@ -255,7 +402,24 @@ public class BattleManager : MonoBehaviour
         {
             item.color = Color.white;
         }
-        mainOptions[_newTarget].color = selectColor;
+        if (AllyStatsManager.current.inventory.Count == 0)
+        {
+            if(_newTarget == 2)
+            {
+                mainOptions[2].color = selectUnavailableColor;
+            }
+            else
+            {
+                mainOptions[2].color = unavailableColor;
+                mainOptions[_newTarget].color = selectColor;
+            }
+            
+        }
+        else
+        {
+            mainOptions[_newTarget].color = selectColor;
+        }
+        
         mainOptionTarget = _newTarget;
     }
     void NewEnemyTarget(int _newTarget)
@@ -270,11 +434,43 @@ public class BattleManager : MonoBehaviour
         itemTexts[_newTarget].color = selectColor;
         itemTarget = _newTarget;
     }
-    void NewAllyTarget(int _newTarget)
+    void NewAllyTarget(int _newTarget,bool _targetAnyAlly = false)
     {
         allyTarget = _newTarget;
-        currentMarkers[0].transform.position = allies[allyTarget].GetGameObject().transform.position + allies[allyTarget].TargetBounds.center;
-        currentMarkers[0].size = (Vector2)allies[allyTarget].TargetBounds.size + Vector2.one * 0.2f;
+        if (_targetAnyAlly)
+        {
+            IBattleable _ally = alliesData[allyTarget].BattleData;
+            currentMarkers[0].transform.position = _ally.GetGameObject().transform.position + _ally.TargetBounds.center;
+            currentMarkers[0].size = (Vector2)_ally.TargetBounds.size + Vector2.one * 0.2f;
+        }
+        else
+        {
+            IBattleable _ally = allies[allyTarget];
+            currentMarkers[0].transform.position = _ally.GetGameObject().transform.position + _ally.TargetBounds.center;
+            currentMarkers[0].size = (Vector2)_ally.TargetBounds.size + Vector2.one * 0.2f;
+        }
+        
+    }
+    public void NewAbilityTarget(int _newTarget)
+    {
+        if (canUseAbilities[abilityTarget])
+        {
+            abilityTexts[abilityTarget].color = Color.white;
+        }
+        else
+        {
+            abilityTexts[abilityTarget].color = unavailableColor;
+        }
+        if (canUseAbilities[_newTarget])
+        {
+            abilityTexts[_newTarget].color = selectColor;
+        }
+        else
+        {
+            abilityTexts[_newTarget].color = selectUnavailableColor;
+        }
+        
+        abilityTarget = _newTarget;
     }
 
     List<IBattleable> GetAllEnteties()
@@ -312,6 +508,20 @@ public class BattleManager : MonoBehaviour
                     battleQue.Add(_battleEntety);
                     _battleEnteties.RemoveAt(i);
                     _totalSpeed -= _battleEntety.Speed;
+                    Color _col;
+                    if (enemies.Contains(_battleEntety))
+                    {
+                        _col = Color.red;
+                    }
+                    else
+                    {
+                        _col = Color.green;
+                    }
+                    Image _image = Instantiate(emptyImagePrefab,turnOrderPanel).GetComponent<Image>();
+                    _image.transform.localScale = Vector3.one;
+                    _image.color = _col;
+                    _image.transform.position = startTurnPoint.position;
+                    queImages.Add(_image);
                 }
                 else
                 {
@@ -327,14 +537,24 @@ public class BattleManager : MonoBehaviour
         alliesToSpawn.Clear();
         enemiesToSpawn.Clear();
     }
+    void GameOver()
+    {
+        print("rip");
+    }
 
     public void TurnEnded()
     {
         battleQue.RemoveAt(0);
+        Destroy(queImages[0].gameObject);
+        queImages.RemoveAt(0);
 
         if(enemies.Count == 0)
         {
             EndBattle();
+        }
+        else if(allies.Count == 0)
+        {
+            GameOver();
         }
         else
         {
@@ -351,8 +571,13 @@ public class BattleManager : MonoBehaviour
     {
         NewMainOptionTarget(0);
         playerPanel.SetActive(true);
-        state = BattleState.mainSelect;
+        State = BattleState.mainSelect;
         currentAlly = _ally;
+
+        if(AllyStatsManager.current.inventory.Count == 0)
+        {
+            mainOptions[2].color = unavailableColor;
+        }
     }
     public void UpdateAllyStatPanel(int _ally)
     {
@@ -365,6 +590,10 @@ public class BattleManager : MonoBehaviour
 
         allyTiltTexts[_ally].text = _allyData.Tilt.ToString() + "%";
         allyTiltBars[_ally].value = _allyData.Tilt / 100f;
+    }
+    public bool IsCurrentAlly(int _battleIndex)
+    {
+        return _battleIndex == currentAlly;
     }
 
     public void CreateBattleNumberText(Vector3 _position, string _text, BattleNumberType _type)
@@ -379,8 +608,36 @@ public class BattleManager : MonoBehaviour
     }
     public void EnemyDefeated(IBattleable _enemy)
     {
-        if (battleQue.Contains(_enemy)) battleQue.Remove(_enemy);
+        if (battleQue.Contains(_enemy))
+        {
+            int _index = battleQue.IndexOf(_enemy);
+            Destroy(queImages[_index].gameObject);
+            queImages.RemoveAt(_index);
+            battleQue.Remove(_enemy);
+        }
+        
         enemies.Remove(_enemy);
+    }
+    public void AllyDefeated(IBattleable _ally)
+    {
+        if (battleQue.Contains(_ally))
+        {
+            int _index = battleQue.IndexOf(_ally);
+            Destroy(queImages[_index].gameObject);
+            queImages.RemoveAt(_index);
+            battleQue.Remove(_ally);
+        }
+
+        allies.Remove(_ally);
+    }
+    public void AllyRevived(IBattleable _ally)
+    {
+        if (allies.Contains(_ally))
+        {
+            Debug.LogError("huh");
+            return;
+        }
+        allies.Add(_ally);
     }
 
     void LoadItemTexts()
@@ -393,7 +650,7 @@ public class BattleManager : MonoBehaviour
             Transform _itemText = Instantiate(itemTextPrefab).transform;
             _itemText.SetParent(inventoryContents);
             _itemText.transform.localScale = Vector3.one;
-            _itemText.transform.localPosition = new Vector3(0f, i * itemTextOffset);
+            _itemText.transform.localPosition = new Vector3(0f, i * -itemTextOffset);
 
             var _text = _itemText.GetComponent<TMP_Text>();
             _text.text = _item.ItemName;
@@ -424,13 +681,138 @@ public class BattleManager : MonoBehaviour
                 {
                     Debug.Log("Fixar det här senare");
                 }
+                else if (_heal.Revive)
+                {
+                    State = BattleState.selectAnyAlly;
+                    currentMarkers.Add(Instantiate(markerPrefab).GetComponent<SpriteRenderer>());
+                    NewAllyTarget(0,true);
+                    OnEndSelection += alliesData[currentAlly].UseItem;
+                }
                 else
                 {
-                    state = BattleState.selectSingleAlly;
+                    State = BattleState.selectSingleAlly;
                     currentMarkers.Add(Instantiate(markerPrefab).GetComponent<SpriteRenderer>());
                     NewAllyTarget(0);
                     OnEndSelection += alliesData[currentAlly].UseItem;
                 }
+                break;
+        }
+    }
+
+    void LoadAbilityTexts()
+    {
+        for (int i = 0; i < alliesBattleAbilities[currentAlly].Count; i++)
+        {
+            Ability _ability = alliesBattleAbilities[currentAlly][i];
+
+            Transform _abilityText = Instantiate(abilityTextPrefab).transform;
+            _abilityText.SetParent(abilityContents);
+            _abilityText.transform.localScale = Vector3.one;
+            _abilityText.transform.localPosition = new Vector3(0f, i * -abilityTextOffset);
+
+            Transform _engergyText = Instantiate(energyTextPrefab).transform;
+            _engergyText.SetParent(abilityContents);
+            _engergyText.transform.localScale = Vector3.one;
+            _engergyText.transform.localPosition = new Vector3(25f, i * -abilityTextOffset);
+
+            var _text = _abilityText.GetComponent<TMP_Text>();
+            var _text2 = _engergyText.GetComponent<TMP_Text>();
+
+            _text.text = _ability.DisplayName;
+            _text2.text = _ability.Energy.ToString();
+
+            bool _hasMembers = false;
+            if (_ability.NeededMembers == null)
+            {
+                _hasMembers = true;
+            }
+            else
+            {
+                List<int> _neededMembers = _ability.NeededMembers;
+                foreach (var _a in allies)
+                {
+                    int _index = (_a as IAllyable).AllyIndex;
+                    if (_neededMembers.Contains(_index)) _neededMembers.Remove(_index);
+                }
+                if (_neededMembers.Count == 0)
+                {
+                    _hasMembers = true;
+                }
+            }
+           
+
+            if (_ability.Energy <= alliesData[currentAlly].Energy && _hasMembers)
+            {
+                _text2.color = Color.blue;
+                canUseAbilities.Add(true);
+            }
+            else
+            {
+                _text.color = selectUnavailableColor;
+                _text2.color = selectUnavailableColor;
+                canUseAbilities.Add(false);
+            }
+            
+            abilityTexts.Add(_text);
+            energyTexts.Add(_text2);
+        }
+    }
+    void RemoveAbilityTexts()
+    {
+        foreach (var item in abilityTexts)
+        {
+            Destroy(item.gameObject);
+        }
+        foreach (var item in energyTexts)
+        {
+            Destroy(item.gameObject);
+        }
+        abilityTexts.Clear();
+        energyTexts.Clear();
+        canUseAbilities.Clear();
+    }
+    void AbilitySelected()
+    {
+        selectedAbility = alliesBattleAbilities[currentAlly][abilityTarget];
+        switch (selectedAbility.TargetType)
+        {
+            case TargetType.singleEnemy:
+                State = BattleState.selectSingleEnemy;
+                currentMarkers.Add(Instantiate(markerPrefab).GetComponent<SpriteRenderer>());
+                NewEnemyTarget(0);
+                OnEndSelection += alliesData[currentAlly].UseAbility;
+                break;
+            case TargetType.noTarget:
+            default:
+                alliesData[currentAlly].UseAbility();
+                State = BattleState.action;
+                playerPanel.SetActive(false);
+                break;
+        }
+    }
+
+    void BackFromTargeting()
+    {
+        Destroy(currentMarkers[0]);
+        currentMarkers.Clear();
+        OnEndSelection = null;
+        switch (lastState)
+        {
+            case BattleState.mainSelect:
+                State = BattleState.mainSelect;
+                mainOptions[mainOptionTarget].color = selectColor;
+                break;
+            case BattleState.abilitySelect:
+                State = BattleState.abilitySelect;
+                abilityPanel.SetActive(true);
+                LoadAbilityTexts();
+                NewAbilityTarget(abilityTarget);
+                break;
+            case BattleState.itemSelect:
+                State = BattleState.itemSelect;
+                inventoryPanel.SetActive(true);
+                LoadItemTexts();
+                NewItemTarget(0);
                 break;
         }
     }
@@ -439,9 +821,11 @@ public enum BattleState
 {
     action,
     mainSelect,
+    abilitySelect,
     itemSelect,
     selectSingleEnemy,
     selectSingleAlly,
+    selectAnyAlly,
 }
 
 public interface IBattleable
@@ -463,9 +847,13 @@ public interface IAllyable
 {
     void SetStats(int _battleIndex,int _allyIndex);
     void RegularAttack();
+    void UseAbility();
     void UseItem();
+    void Revive();
 
+    public IBattleable BattleData { get; }
     int BattleIndex { get; set; }
+    int AllyIndex { get; }
     int Health { get; }
     int MaxHealth { get; }
     int Energy { get; }

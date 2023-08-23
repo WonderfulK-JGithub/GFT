@@ -35,6 +35,12 @@ public class BattleText : MonoBehaviour
             case BattleTextType.Blocked:
                 text.text = "Blocked";
                 break;
+            case BattleTextType.Miss:
+                text.text = "Missed";
+                break;
+            case BattleTextType.KO:
+                text.text = "KO";
+                break;
         }
         text.color = textColors[(int)_type];
     }
@@ -49,4 +55,6 @@ public enum BattleTextType
 {
     Nice,
     Blocked,
+    Miss,
+    KO,
 }

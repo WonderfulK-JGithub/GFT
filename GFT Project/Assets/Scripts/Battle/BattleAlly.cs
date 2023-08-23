@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class BattleAlly : MonoBehaviour, IBattleable, IAllyable
 {
+    [Header("Battle ally")]
+    [SerializeField] GameObject circleIndicatorPrefab;
+
     public Bounds TargetBounds
     {
         get
@@ -12,9 +15,15 @@ public class BattleAlly : MonoBehaviour, IBattleable, IAllyable
             return _bounds;
         }
     }
-
-
+    public IBattleable BattleData
+    {
+        get
+        {
+            return this;
+        }
+    }
     public int BattleIndex { get; set; }
+    public int AllyIndex { get; set; }
 
     protected int speed;
     public int Speed
@@ -73,7 +82,7 @@ public class BattleAlly : MonoBehaviour, IBattleable, IAllyable
     protected Animator anim;
     protected SpriteRenderer rend;
 
-    readonly string[] timeButtons = { "Return","Select","Menu"};
+    readonly string[] timeButtons = { "Select", "Return","Menu"};
 
     protected string timeButton = "Return";
 
@@ -83,7 +92,14 @@ public class BattleAlly : MonoBehaviour, IBattleable, IAllyable
 
     protected Vector3 startPos;
 
+    protected bool dead;
+
     GameObject itemObject;
+
+    #region references
+    protected AdamBattle adam;
+    protected GustavBattle gustav;
+    #endregion
 
     protected virtual void Awake()
     {
@@ -91,14 +107,18 @@ public class BattleAlly : MonoBehaviour, IBattleable, IAllyable
         anim = GetComponent<Animator>();
         rend = GetComponent<SpriteRenderer>();
     }
-
+    private void Start()
+    {
+        adam = FindAnyObjectByType<AdamBattle>();
+        gustav = FindAnyObjectByType<GustavBattle>();
+    }
     protected virtual void Update()
     {
         if (Input.GetButtonDown(timeButton))
         {
             if (waitTimer <= 0f && !timed)
             {
-                timeTimer = 0.12f;
+                timeTimer = 0.14f;
                 timed = true;
             }
             else
@@ -113,7 +133,7 @@ public class BattleAlly : MonoBehaviour, IBattleable, IAllyable
             if (timeTimer <= 0f)
             {
                 timed = false;
-                waitTimer = 0.12f;
+                waitTimer = 0.14f;
             }
         }
         else
@@ -130,6 +150,7 @@ public class BattleAlly : MonoBehaviour, IBattleable, IAllyable
     public void SetStats(int _battleIndex,int _allyIndex)
     {
         BattleIndex = _battleIndex;
+        AllyIndex = _allyIndex;
         timeButton = timeButtons[_battleIndex];
 
         AllyStats _stats = AllyStatsManager.current.alliesStats[_allyIndex];
@@ -152,6 +173,24 @@ public class BattleAlly : MonoBehaviour, IBattleable, IAllyable
     {
         Debug.Log("Aj");
     }
+    protected int DamageCalculation(int _damage)
+    {
+        return _damage;
+    }
+
+    public virtual void Die()
+    {
+        anim.Play("Dead");
+        dead = true;
+        BattleManager.current.AllyDefeated(this);
+    }
+    public virtual void Revive()
+    {
+        if (!dead) return;
+        dead = false;
+        anim.Play("BattleIdle");
+        BattleManager.current.AllyRevived(this);
+    }
 
     public virtual void Heal(int _amount)
     {
@@ -161,15 +200,35 @@ public class BattleAlly : MonoBehaviour, IBattleable, IAllyable
         BattleManager.current.CreateBattleNumberText(transform.position + TargetBounds.center, _amount.ToString(), BattleNumberType.Heal);
         BattleManager.current.UpdateAllyStatPanel(BattleIndex);
     }
+    public virtual void GainEnergy(int _amount)
+    {
+        energy += _amount;
+        energy = Mathf.Clamp(energy, 0, maxEnergy);
 
+        BattleManager.current.CreateBattleNumberText(transform.position + TargetBounds.center, _amount.ToString(), BattleNumberType.Energy);
+        BattleManager.current.UpdateAllyStatPanel(BattleIndex);
+    }
     public virtual void RegularAttack()
     {
 
     }
 
+    protected void CreateCircleIndicator()
+    {
+        Instantiate(circleIndicatorPrefab, transform.position + TargetBounds.center, Quaternion.identity);
+    }
+    protected void CreateCircleIndicator(float _time)
+    {
+        Invoke(nameof(CreateCircleIndicator), _time);
+    }
     protected bool AccuractCheck()
     {
         return accuracy > Random.Range(0, 100);
+    }
+
+    public virtual void UseAbility()
+    {
+        Debug.Log("Implement!!!");
     }
 
     //först item animation
@@ -178,7 +237,7 @@ public class BattleAlly : MonoBehaviour, IBattleable, IAllyable
         Item _usedItem = BattleManager.current.selectedItem;
         itemObject = Instantiate(BattleManager.current.battleItemIconPrefab,transform.position + TargetBounds.center,Quaternion.identity);
         itemObject.GetComponent<SpriteRenderer>().sprite = _usedItem.ItemSprite;
-        itemObject.LeanMoveY(itemObject.transform.position.y + 1f, 0.5f).setOnComplete(ItemUsage);
+        itemObject.LeanMoveY(itemObject.transform.position.y + 1.5f, 1f).setOnComplete(ItemUsage);
         anim.Play("Item");
     }
     //när item animationen är klar
@@ -192,17 +251,27 @@ public class BattleAlly : MonoBehaviour, IBattleable, IAllyable
         {
             case ItemType.healing:
                 HealingItem _heal = _usedItem as HealingItem;
-                if (_heal.TargetAll)
+                if (_heal.Revive)
                 {
-                    foreach (var _ally in BattleManager.current.Allies)
-                    {
-                        _ally.Heal(_heal.HealthGain);
-                    }
+                    IAllyable _ally = BattleManager.current.AlliesData[BattleManager.current.allyTarget];
+                    _ally.Revive();
+                    _ally.BattleData.Heal(_heal.HealthGain);
                 }
                 else
                 {
-                    BattleManager.current.Allies[BattleManager.current.allyTarget].Heal(_heal.HealthGain);
+                    if (_heal.TargetAll)
+                    {
+                        foreach (var _ally in BattleManager.current.Allies)
+                        {
+                            _ally.Heal(_heal.HealthGain);
+                        }
+                    }
+                    else
+                    {
+                        BattleManager.current.Allies[BattleManager.current.allyTarget].Heal(_heal.HealthGain);
+                    }
                 }
+                
                 Invoke(nameof(EndTurn), 1f);
                 break;
         }

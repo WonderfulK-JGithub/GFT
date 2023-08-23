@@ -74,7 +74,7 @@ public class MinionBattle : MonoBehaviour,IBattleable
     void Hit()
     {
         Destroy(ball);
-        targetPlayer.TakeDamage(5);
+        targetPlayer.TakeDamage(10);
         BattleManager.current.TurnEnded();
     }
 }

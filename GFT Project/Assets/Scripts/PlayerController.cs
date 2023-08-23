@@ -62,22 +62,22 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         rb.velocity = walkSpeed * walkDir.normalized;
-        if(Vector3.Distance(transform.position,points[points.Count - 1]) > walkSpeed * Time.fixedDeltaTime)
+        if(Vector3.Distance(transform.position,points[0]) > walkSpeed * Time.fixedDeltaTime)
         {
-            points.RemoveAt(0);
-            directions.RemoveAt(0);
+            points.RemoveAt(points.Count - 1);
+            directions.RemoveAt(directions.Count - 1);
 
-            points.Add(transform.position);
-            directions.Add(lookDir);
+            points.Insert(0,transform.position);
+            directions.Insert(0,lookDir);
         }
 
         for (int i = 0; i < followers.Length; i++)
         {
             Animator _follower = followers[i];
             Vector3 _lastPos = _follower.transform.position;
-            _follower.transform.position = Vector3.MoveTowards(_lastPos, points[i * stepDifference], walkSpeed * Time.fixedDeltaTime);
+            _follower.transform.position = Vector3.MoveTowards(_lastPos, points[(i + 1) * stepDifference - 1], walkSpeed * Time.fixedDeltaTime);
             bool _moving = _follower.transform.position != _lastPos;
-            _follower.Play(GetAnimation(_moving, directions[i]));
+            _follower.Play(GetAnimation(_moving, directions[(i + 1) * stepDifference - 1]));
         }
     }
 

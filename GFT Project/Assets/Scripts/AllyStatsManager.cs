@@ -7,6 +7,10 @@ public class AllyStatsManager : MonoBehaviour
     public static AllyStatsManager current;
 
     [SerializeField] Item golonka;
+    [SerializeField] Item gustavgeosskladadakkaa;
+    [SerializeField] Ability a;
+    [SerializeField] Ability b;
+    [SerializeField] Ability k;
 
     public List<AllyStats> alliesStats;
     public List<Item> inventory = new();
@@ -20,6 +24,7 @@ public class AllyStatsManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
             GenerateAlliesStats();
             AddItem(golonka);
+            AddItem(gustavgeosskladadakkaa);
         }
         else
         {
@@ -46,6 +51,8 @@ public class AllyStatsManager : MonoBehaviour
             lvl = 1,
             experienceToNextLevel = 100,
         };
+        _adam.abilities.Add(a);
+        _adam.abilities.Add(b);
         alliesStats.Add(_adam);
 
         AllyStats _gustav = new AllyStats
@@ -63,7 +70,26 @@ public class AllyStatsManager : MonoBehaviour
             lvl = 1,
             experienceToNextLevel = 100,
         };
+        _gustav.abilities.Add(b);
+        _gustav.abilities.Add(k);
         alliesStats.Add(_gustav);
+
+        AllyStats _herman = new AllyStats
+        {
+            type = AllyType.herman,
+            heroName = "Herman",
+            maxHealth = 25,
+            maxEnergy = 40,
+            attackPower = 6,
+            defense = 3,
+            accuracy = 90,
+            speed = 8,
+            currentHealth = 25,
+            currentEnergy = 40,
+            lvl = 1,
+            experienceToNextLevel = 100,
+        };
+        alliesStats.Add(_herman);
     }
 
     public void RemoveItem(Item _itemToRemove)
@@ -114,10 +140,13 @@ public class AllyStats
     public int lvl;
     public int experience;
     public int experienceToNextLevel;
+
+    public List<Ability> abilities = new();
 }
 
 public enum AllyType
 {
     adam,
     gustav,
+    herman,
 }

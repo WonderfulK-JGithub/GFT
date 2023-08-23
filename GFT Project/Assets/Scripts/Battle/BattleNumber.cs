@@ -40,4 +40,5 @@ public enum BattleNumberType
     AllyDamage,
     EnemyDamage,
     Heal,
+    Energy,
 }
