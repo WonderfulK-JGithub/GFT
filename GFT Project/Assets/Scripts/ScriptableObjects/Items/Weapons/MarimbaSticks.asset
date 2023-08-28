@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e6c0e4d9b0b85643b47ca4ad56e2d6f, type: 3}
+  m_Name: MarimbaSticks
+  m_EditorClassIdentifier: 
+  itemName: Marimba sticks
+  description: 
+  goldValue: 10
+  useInBattle: 0
+  useInInventory: 0
+  sortingOrder: 0
+  typeOfItem: 1
+  itemSprite: {fileID: 21300000, guid: 5ec2fbff17a20a240b8bc2074e770d17, type: 3}
+  weaponType: 1
+  bonusAttackPower: 2
+  bonusEnergy: 5
+  bonusSpeed: 0

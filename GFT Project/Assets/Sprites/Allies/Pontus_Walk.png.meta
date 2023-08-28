@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 51b7b77f5b4461746b2b604965820fa9
+guid: aa82fba74163e0145a9353d4567044aa
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,85 +110,169 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Herman_CrossCheck_0
+      name: Pontus_Walk_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 48
+        width: 16
+        height: 24
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0858cb6ce6155d6409e9fc3bb96dcc81
+      internalID: 286898773
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pontus_Walk_1
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 48
+        width: 16
+        height: 24
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5fe17a0809509c14488c17e48fa93671
+      internalID: 1688345005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pontus_Walk_2
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 48
+        width: 16
+        height: 24
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 444a80ef7597032419071abcefc67bac
+      internalID: -1143426784
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pontus_Walk_3
       rect:
         serializedVersion: 2
         x: 0
         y: 24
         width: 16
         height: 24
-      alignment: 9
-      pivot: {x: 0.315, y: 0}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 600f5107b22fcfc41ab0ad1b44fe9f10
-      internalID: -117502140
+      spriteID: e92325af1d1be994dbc84dfeb1378730
+      internalID: -954876475
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Herman_CrossCheck_1
+      name: Pontus_Walk_4
       rect:
         serializedVersion: 2
         x: 16
         y: 24
         width: 16
         height: 24
-      alignment: 9
-      pivot: {x: 0.315, y: 0}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f766e9e37614ae24489bff37e0308e9a
-      internalID: -1075805682
+      spriteID: b40c25d4328cba2478fee871e526e7ad
+      internalID: -1431760031
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Herman_CrossCheck_2
+      name: Pontus_Walk_5
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 24
+        width: 16
+        height: 24
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1176da4a3bf23bc4ab397a2a27b7d5b0
+      internalID: 1189446094
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pontus_Walk_6
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 16
         height: 24
-      alignment: 9
-      pivot: {x: 0.315, y: 0}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fd579acf934fcf94db5bd461d1e392f5
-      internalID: -938489266
+      spriteID: ee1203fbf71e5be4ebc5d123dbe08cbf
+      internalID: -1725737902
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Herman_CrossCheck_3
+      name: Pontus_Walk_7
       rect:
         serializedVersion: 2
         x: 16
         y: 0
         width: 16
         height: 24
-      alignment: 9
-      pivot: {x: 0.315, y: 0}
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 53ec7dd24e3585c44bbd43eea1f35a46
-      internalID: -665841093
+      spriteID: 74ed4ad57ef5c1e4fa96ee2079dc5299
+      internalID: -1716762608
       vertices: []
       indices: 
       edges: []
@@ -204,10 +288,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Herman_CrossCheck_0: -117502140
-      Herman_CrossCheck_1: -1075805682
-      Herman_CrossCheck_2: -938489266
-      Herman_CrossCheck_3: -665841093
+      Pontus_Walk_0: 286898773
+      Pontus_Walk_1: 1688345005
+      Pontus_Walk_2: -1143426784
+      Pontus_Walk_3: -954876475
+      Pontus_Walk_4: -1431760031
+      Pontus_Walk_5: 1189446094
+      Pontus_Walk_6: -1725737902
+      Pontus_Walk_7: -1716762608
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

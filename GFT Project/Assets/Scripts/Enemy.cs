@@ -9,9 +9,6 @@ public class Enemy : MonoBehaviour,ICollideable,ISaveable
 
     public void OnCollide()
     {
-        BattleManager.alliesToSpawn.Add(0);
-        BattleManager.alliesToSpawn.Add(1);
-        BattleManager.alliesToSpawn.Add(2);
         BattleManager.enemiesToSpawn.Add(Vector3.up,0);
         BattleManager.enemiesToSpawn.Add(Vector3.down, 0);
 

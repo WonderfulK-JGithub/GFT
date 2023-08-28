@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 51b7b77f5b4461746b2b604965820fa9
+guid: 1ea423ca44ae5db48b92ea5a576ba3d6
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,85 +110,127 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Herman_CrossCheck_0
+      name: Pontus_Wrench_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 24
-        width: 16
-        height: 24
-      alignment: 9
-      pivot: {x: 0.315, y: 0}
+        y: 32
+        width: 24
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 600f5107b22fcfc41ab0ad1b44fe9f10
-      internalID: -117502140
+      spriteID: 3dd8b6671cd145a4a8945b48dfc5f7ff
+      internalID: -366304871
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Herman_CrossCheck_1
+      name: Pontus_Wrench_1
       rect:
         serializedVersion: 2
-        x: 16
-        y: 24
-        width: 16
-        height: 24
-      alignment: 9
-      pivot: {x: 0.315, y: 0}
+        x: 24
+        y: 32
+        width: 24
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f766e9e37614ae24489bff37e0308e9a
-      internalID: -1075805682
+      spriteID: 6921010e8d976e040879ae5a1208d6ea
+      internalID: 1360146839
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Herman_CrossCheck_2
+      name: Pontus_Wrench_2
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 32
+        width: 24
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e36d8ce92a5684b4cb4bb3ebe674e6e5
+      internalID: 1117984774
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pontus_Wrench_3
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 16
-        height: 24
-      alignment: 9
-      pivot: {x: 0.315, y: 0}
+        width: 24
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fd579acf934fcf94db5bd461d1e392f5
-      internalID: -938489266
+      spriteID: 096a386772e16ee49ba489216110fd10
+      internalID: 1736093596
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Herman_CrossCheck_3
+      name: Pontus_Wrench_4
       rect:
         serializedVersion: 2
-        x: 16
+        x: 24
         y: 0
-        width: 16
-        height: 24
-      alignment: 9
-      pivot: {x: 0.315, y: 0}
+        width: 24
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 53ec7dd24e3585c44bbd43eea1f35a46
-      internalID: -665841093
+      spriteID: f3ae6572cc56b1e4ba9b4af76ef2046f
+      internalID: -643909474
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pontus_Wrench_5
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 0
+        width: 24
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dd1a66cda83e6184cbbf0b77913b724d
+      internalID: 1410268726
       vertices: []
       indices: 
       edges: []
@@ -204,10 +246,12 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Herman_CrossCheck_0: -117502140
-      Herman_CrossCheck_1: -1075805682
-      Herman_CrossCheck_2: -938489266
-      Herman_CrossCheck_3: -665841093
+      Pontus_Wrench_0: -366304871
+      Pontus_Wrench_1: 1360146839
+      Pontus_Wrench_2: 1117984774
+      Pontus_Wrench_3: 1736093596
+      Pontus_Wrench_4: -643909474
+      Pontus_Wrench_5: 1410268726
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

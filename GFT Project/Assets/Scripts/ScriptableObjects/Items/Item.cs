@@ -10,7 +10,7 @@ public class Item : ScriptableObject
     [SerializeField] bool useInBattle = false;
     [SerializeField] bool useInInventory = false;
     [SerializeField] int sortingOrder = 0;
-    [SerializeField] ItemType typeOfItem = 0;
+    [SerializeField] protected ItemType typeOfItem;
     [SerializeField] Sprite itemSprite;
 
 
@@ -28,4 +28,6 @@ public class Item : ScriptableObject
 public enum ItemType
 {
     healing,
+    weapon,
+    armor,
 }

@@ -55,7 +55,12 @@ public class GustavBattle : BattleAlly
     void Returned()
     {
         anim.Play("BattleIdle");
-        BattleManager.current.TurnEnded();
+        if(alliesOnTurn.Count == 0) BattleManager.current.TurnEnded();
+        else
+        {
+            BattleManager.current.TurnsEnded(alliesOnTurn);
+            alliesOnTurn.Clear();
+        }
         rend.sortingOrder = 0;
     }
     void ReturnedFromCoOp()
@@ -98,6 +103,7 @@ public class GustavBattle : BattleAlly
 
     public override void UseAbility()
     {
+        base.UseAbility();
         Ability _abilityToUse = BattleManager.current.selectedAbility;
         switch (_abilityToUse.AbilityName)
         {

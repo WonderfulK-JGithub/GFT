@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 51b7b77f5b4461746b2b604965820fa9
+guid: 35421dd852ab60e43bf57782496d1c14
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,85 +110,169 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Herman_CrossCheck_0
+      name: Pontus_HockeySwing_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 24
-        width: 16
-        height: 24
+        y: 64
+        width: 32
+        height: 32
       alignment: 9
-      pivot: {x: 0.315, y: 0}
+      pivot: {x: 0.34375, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 600f5107b22fcfc41ab0ad1b44fe9f10
-      internalID: -117502140
+      spriteID: fb21913292df8694686b3acc96f0f407
+      internalID: 2036412077
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Herman_CrossCheck_1
+      name: Pontus_HockeySwing_1
       rect:
         serializedVersion: 2
-        x: 16
-        y: 24
-        width: 16
-        height: 24
+        x: 32
+        y: 64
+        width: 32
+        height: 32
       alignment: 9
-      pivot: {x: 0.315, y: 0}
+      pivot: {x: 0.34375, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f766e9e37614ae24489bff37e0308e9a
-      internalID: -1075805682
+      spriteID: 121ccadfe5b01b645a36f67576eeb7d4
+      internalID: 2017517357
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Herman_CrossCheck_2
+      name: Pontus_HockeySwing_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 64
+        width: 32
+        height: 32
+      alignment: 9
+      pivot: {x: 0.34375, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3dc849ebec28a064c8febcb6a48acce7
+      internalID: 122695263
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pontus_HockeySwing_3
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 32
+        width: 32
+        height: 32
+      alignment: 9
+      pivot: {x: 0.34375, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5fe6b4cd6e1a5c94b9affccd78eb78aa
+      internalID: 1317413367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pontus_HockeySwing_4
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 32
+        width: 32
+        height: 32
+      alignment: 9
+      pivot: {x: 0.34375, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 63767839d37dc22498d265aa1ced7b13
+      internalID: 739457047
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pontus_HockeySwing_5
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 32
+        width: 32
+        height: 32
+      alignment: 9
+      pivot: {x: 0.34375, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3f508c1b99e710d40a4b5aa954dc2ad3
+      internalID: 1566493979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pontus_HockeySwing_6
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 16
-        height: 24
+        width: 32
+        height: 32
       alignment: 9
-      pivot: {x: 0.315, y: 0}
+      pivot: {x: 0.34375, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fd579acf934fcf94db5bd461d1e392f5
-      internalID: -938489266
+      spriteID: 39a9016651424ef47837c3579e92c972
+      internalID: -1583998544
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Herman_CrossCheck_3
+      name: Pontus_HockeySwing_7
       rect:
         serializedVersion: 2
-        x: 16
+        x: 32
         y: 0
-        width: 16
-        height: 24
+        width: 32
+        height: 32
       alignment: 9
-      pivot: {x: 0.315, y: 0}
+      pivot: {x: 0.34375, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 53ec7dd24e3585c44bbd43eea1f35a46
-      internalID: -665841093
+      spriteID: bb6aa57d76d90ea4a94ebd63f4719592
+      internalID: -1145952523
       vertices: []
       indices: 
       edges: []
@@ -204,10 +288,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Herman_CrossCheck_0: -117502140
-      Herman_CrossCheck_1: -1075805682
-      Herman_CrossCheck_2: -938489266
-      Herman_CrossCheck_3: -665841093
+      Pontus_HockeySwing_0: 2036412077
+      Pontus_HockeySwing_1: 2017517357
+      Pontus_HockeySwing_2: 122695263
+      Pontus_HockeySwing_3: 1317413367
+      Pontus_HockeySwing_4: 739457047
+      Pontus_HockeySwing_5: 1566493979
+      Pontus_HockeySwing_6: -1583998544
+      Pontus_HockeySwing_7: -1145952523
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

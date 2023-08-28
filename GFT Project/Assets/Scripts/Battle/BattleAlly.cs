@@ -92,6 +92,8 @@ public class BattleAlly : MonoBehaviour, IBattleable, IAllyable
 
     protected Vector3 startPos;
 
+    protected List<int> alliesOnTurn = new();
+
     protected bool dead;
 
     GameObject itemObject;
@@ -99,6 +101,7 @@ public class BattleAlly : MonoBehaviour, IBattleable, IAllyable
     #region references
     protected AdamBattle adam;
     protected GustavBattle gustav;
+    protected HermanBattle herman;
     #endregion
 
     protected virtual void Awake()
@@ -111,6 +114,7 @@ public class BattleAlly : MonoBehaviour, IBattleable, IAllyable
     {
         adam = FindAnyObjectByType<AdamBattle>();
         gustav = FindAnyObjectByType<GustavBattle>();
+        herman = FindAnyObjectByType<HermanBattle>();
     }
     protected virtual void Update()
     {
@@ -153,7 +157,7 @@ public class BattleAlly : MonoBehaviour, IBattleable, IAllyable
         AllyIndex = _allyIndex;
         timeButton = timeButtons[_battleIndex];
 
-        AllyStats _stats = AllyStatsManager.current.alliesStats[_allyIndex];
+        StatsData _stats = AllyStatsManager.current.alliesStats[_allyIndex].GetCompleteStats();
         health = _stats.currentHealth;
         maxHealth = _stats.maxHealth;
         energy = _stats.currentEnergy;
@@ -228,7 +232,29 @@ public class BattleAlly : MonoBehaviour, IBattleable, IAllyable
 
     public virtual void UseAbility()
     {
-        Debug.Log("Implement!!!");
+        Ability _abilityToUse = BattleManager.current.selectedAbility;
+
+        if (_abilityToUse.NeededMembers == null) return;
+
+        foreach (var item in _abilityToUse.NeededMembers)
+        {
+            int _battleIndex = AllyStatsManager.current.currentParty.IndexOf(item);
+            if(_battleIndex == -1)
+            {
+                Debug.LogError("Vet inte hur, men det här hände. Rip");
+                return;
+            }
+            int _queIndex = BattleManager.current.BattleQue.IndexOf(BattleManager.current.Allies[_battleIndex]);
+            if (_queIndex == -1)
+            {
+                Debug.LogError("huh?");
+                return;
+            }
+            alliesOnTurn.Add(_queIndex);
+        }
+
+        alliesOnTurn.Sort();
+        alliesOnTurn.Reverse();
     }
 
     //först item animation

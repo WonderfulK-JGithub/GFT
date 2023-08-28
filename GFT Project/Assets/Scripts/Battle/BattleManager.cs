@@ -16,7 +16,7 @@ public class BattleManager : MonoBehaviour
     [SerializeField] Transform allyBasePos;
     [SerializeField] Transform enemyBasePos;
 
-    public static List<int> alliesToSpawn = new();
+    //public static List<int> alliesToSpawn = new();
     public static Dictionary<Vector3,int> enemiesToSpawn = new();//enemies har inte bestämda positioner, därför används ett dictionary här (men inte för allies)
 
     List<IAllyable> alliesData = new();//om en ally dör finns den fortfarande kvar i denna lista
@@ -48,6 +48,19 @@ public class BattleManager : MonoBehaviour
 
     List<IBattleable> battleQue = new();
     List<Image> queImages = new();
+
+    public List<IBattleable> BattleQue
+    {
+        get
+        {
+            List<IBattleable> _newList = new();
+            foreach (var item in battleQue)
+            {
+                _newList.Add(item);
+            }
+            return _newList;
+        }
+    }
 
     BattleState lastState;
     BattleState state;
@@ -102,7 +115,7 @@ public class BattleManager : MonoBehaviour
     [SerializeField] Transform inventoryContents;
     [SerializeField] float itemTextOffset;
     public GameObject battleItemIconPrefab;
-    List<TMP_Text> itemTexts = new();
+    List<ItemText> itemTexts = new();
     List<Item> battleInventory = new();
     int itemTarget;
     [HideInInspector] public Item selectedItem;
@@ -127,15 +140,17 @@ public class BattleManager : MonoBehaviour
     {
         current = this;
 
-        if(alliesToSpawn.Count == 0)
+        List<int> _alliesToSpawn = AllyStatsManager.current.currentParty;
+
+        if(_alliesToSpawn.Count == 0)
         {
-            alliesToSpawn.Add(0);
+            _alliesToSpawn.Add(0);
             enemiesToSpawn.Add(Vector3.zero,0);
         }
 
         List<Vector3> _positions = new();
 
-        switch (alliesToSpawn.Count)
+        switch (_alliesToSpawn.Count)
         {
             case 1:
             default:
@@ -153,17 +168,17 @@ public class BattleManager : MonoBehaviour
         }
 
         //skapar allies och enemies och lägger till dem i listorna
-        for (int i = 0; i < alliesToSpawn.Count; i++)
+        for (int i = 0; i < _alliesToSpawn.Count; i++)
         {
-            Component _ally = Instantiate(allyPrefabs[alliesToSpawn[i]], _positions[i], Quaternion.identity).GetComponent(typeof(IBattleable));
+            Component _ally = Instantiate(allyPrefabs[_alliesToSpawn[i]], _positions[i], Quaternion.identity).GetComponent(typeof(IBattleable));
             allies.Add(_ally as IBattleable);
             alliesData.Add(_ally as IAllyable);
-            (_ally as IAllyable).SetStats(i, alliesToSpawn[i]);
+            (_ally as IAllyable).SetStats(i, _alliesToSpawn[i]);
             allyStatPanels[i].SetActive(true);
             UpdateAllyStatPanel(i);
 
             List<Ability> _battleAbilities = new();
-            foreach (var _ability in AllyStatsManager.current.alliesStats[alliesToSpawn[i]].abilities)
+            foreach (var _ability in AllyStatsManager.current.alliesStats[_alliesToSpawn[i]].abilities)
             {
                 if(_ability.NeededMembers == null)
                 {
@@ -171,7 +186,7 @@ public class BattleManager : MonoBehaviour
                     continue;
                 }
                 List<int> _neededMembers = _ability.NeededMembers;
-                foreach (var _a in alliesToSpawn)
+                foreach (var _a in _alliesToSpawn)
                 {
                     if (_neededMembers.Contains(_a)) _neededMembers.Remove(_a);
                 }
@@ -287,8 +302,6 @@ public class BattleManager : MonoBehaviour
                     int _newTarget = abilityTarget + _input;
                     if (_newTarget < 0) _newTarget = abilityTexts.Count - 1;
                     else if (_newTarget > abilityTexts.Count - 1) _newTarget = 0;
-
-                    print(_newTarget);
                     NewAbilityTarget(_newTarget);
                 }
                 if (Input.GetButtonDown("Select"))
@@ -534,7 +547,6 @@ public class BattleManager : MonoBehaviour
     void EndBattle()
     {
         SceneTransition.current.BackFromBattle();
-        alliesToSpawn.Clear();
         enemiesToSpawn.Clear();
     }
     void GameOver()
@@ -564,8 +576,33 @@ public class BattleManager : MonoBehaviour
             }
             battleQue[0].YourTurn();
         }
+    }
+    public void TurnsEnded(List<int> _queIndexes)
+    {
+        foreach (var item in _queIndexes)
+        {
+            print(item);
+            battleQue.RemoveAt(item);
+            Destroy(queImages[item].gameObject);
+            queImages.RemoveAt(item);
+        }
 
-        
+        if (enemies.Count == 0)
+        {
+            EndBattle();
+        }
+        else if (allies.Count == 0)
+        {
+            GameOver();
+        }
+        else
+        {
+            if (battleQue.Count == 0)
+            {
+                LoadBattleQue();
+            }
+            battleQue[0].YourTurn();
+        }
     }
     public void StartSelection(int _ally)
     {
@@ -652,8 +689,8 @@ public class BattleManager : MonoBehaviour
             _itemText.transform.localScale = Vector3.one;
             _itemText.transform.localPosition = new Vector3(0f, i * -itemTextOffset);
 
-            var _text = _itemText.GetComponent<TMP_Text>();
-            _text.text = _item.ItemName;
+            var _text = _itemText.GetComponent<ItemText>();
+            _text.SetText(_item, AllyStatsManager.current.inventoryAmount[_item]);
             itemTexts.Add(_text);
             battleInventory.Add(_item);
         }
@@ -729,9 +766,12 @@ public class BattleManager : MonoBehaviour
             else
             {
                 List<int> _neededMembers = _ability.NeededMembers;
-                foreach (var _a in allies)
+                foreach (var _a in battleQue)
                 {
-                    int _index = (_a as IAllyable).AllyIndex;
+                    IAllyable _ally = (_a as IAllyable);
+                    if (_ally == null) continue;
+                    if (_ally.Tilt > 50) continue;
+                    int _index = _ally.AllyIndex;
                     if (_neededMembers.Contains(_index)) _neededMembers.Remove(_index);
                 }
                 if (_neededMembers.Count == 0)
